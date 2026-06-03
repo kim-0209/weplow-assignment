@@ -7,7 +7,6 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: "/weflow-assignment",
-  assetPrefix: "/weflow-assignment/",
 };
 
 export default nextConfig;
