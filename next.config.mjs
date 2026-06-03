@@ -6,6 +6,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  basePath: "/weflow-assignment",
+  assetPrefix: "/weflow-assignment/",
 };
 
 export default nextConfig;
