@@ -1,32 +1,38 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { CASES_PAGE } from '@/data/casesText';
+import Link from "next/link";
+import Image from "next/image";
+import { CASES_PAGE } from "@/data/casesText";
 
 function CaseCard({ item }) {
   return (
-    <div className="bg-slate-900/50 backdrop-blur-sm border border-white/[0.06] rounded-xl overflow-hidden card-glow transition-all duration-300 hover:border-blue-500/30 hover:-translate-y-0.5">
-      <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-slate-800/60 to-slate-900/80">
+    <Link
+      href={item.blogHref}
+      className="block bg-slate-900/50 backdrop-blur-sm border border-white/[0.06] rounded-xl overflow-hidden card-glow transition-all duration-300 hover:border-blue-500/30 hover:-translate-y-0.5"
+    >
+      <div className="relative h-48 overflow-hidden bg-gradient-to-br from-slate-800/60 to-slate-900/80">
         {item.img ? (
-          <Image src={item.img} alt={item.title} fill className="object-cover" />
+          <Image
+            src={item.img}
+            alt={item.title}
+            fill
+            className="object-cover"
+          />
         ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+          <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-slate-500 text-xs">이미지 준비 중</span>
           </div>
         )}
+
         <span className="absolute top-2 left-2 text-xs text-blue-400 font-semibold px-2 py-0.5 bg-blue-500/10 rounded-full border border-blue-500/20 backdrop-blur-sm">
           {item.category}
         </span>
       </div>
-      <div className="p-4 flex items-center justify-between">
-        <h3 className="text-sm font-bold text-white">{item.title}</h3>
-        <Link
-          href={item.blogHref}
-          className="text-xs text-blue-400 hover:text-blue-300 font-medium transition-colors whitespace-nowrap ml-2"
-        >
-          자세히보기
-        </Link>
+
+      <div className="p-4 min-h-[88px] flex flex-col justify-center">
+        <h3 className="text-sm font-bold text-white mb-2">{item.title}</h3>
+
+        <span className="text-xs text-blue-400 font-medium">자세히보기 →</span>
       </div>
-    </div>
+    </Link>
   );
 }
 

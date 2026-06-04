@@ -1,7 +1,7 @@
-﻿'use client';
+﻿"use client";
 
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import {
   CalendarDays,
   Clock,
@@ -13,12 +13,13 @@ import {
   Zap,
   ShieldCheck,
   Star,
-} from 'lucide-react';
-import { RESERVATION_PAGE } from '@/data/reservationText';
+} from "lucide-react";
+import { RESERVATION_PAGE } from "@/data/reservationText";
+import { supabase } from "@/lib/supabase";
 
-const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+const DAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
 
-const Calendar = dynamic(() => import('./CalendarPicker'), {
+const Calendar = dynamic(() => import("./CalendarPicker"), {
   ssr: false,
   loading: () => <div className="min-h-[340px]" />,
 });
@@ -36,31 +37,78 @@ export default function ReservationFormSection() {
   const { form, timeSlots } = RESERVATION_PAGE;
 
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState('');
+  const [selectedTime, setSelectedTime] = useState("");
   const [formData, setFormData] = useState({
-    name: '', phone: '', type: '', industry: '', request: '', agree: false,
+    name: "",
+    phone: "",
+    type: "",
+    industry: "",
+    request: "",
+    agree: false,
   });
   const [submitted, setSubmitted] = useState(false);
 
   function handleDateSelect(date) {
     setSelectedDate(date);
-    setSelectedTime('');
+    setSelectedTime("");
   }
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   }
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedDate || !selectedTime) return alert('날짜와 시간을 선택해주세요.');
-    if (!formData.agree) return alert('개인정보 수집 및 상담 동의에 체크해 주세요.');
-    setSubmitted(true);
-  }
+
+    if (!selectedDate) {
+      alert("날짜를 선택해주세요.");
+      return;
+    }
+
+    if (!selectedTime) {
+      alert("시간을 선택해주세요.");
+      return;
+    }
+
+    const { error } = await supabase.from("reservations").insert([
+      {
+        reservation_date: selectedDate,
+        reservation_time: selectedTime,
+        name: formData.name,
+        phone: formData.phone,
+        production_type: formData.type,
+        business_type: formData.industry,
+        request_note: formData.request,
+      },
+    ]);
+
+    if (error) {
+      console.error(error);
+      alert("예약 신청에 실패했습니다.");
+      return;
+    }
+
+    alert("예약 신청이 완료되었습니다.");
+
+    setFormData({
+      name: "",
+      phone: "",
+      type: "",
+      industry: "",
+      request: "",
+      agree: false,
+    });
+
+    setSelectedDate(null);
+    setSelectedTime("");
+  };
 
   const scheduleLabel = selectedDate
-    ? `${selectedDate.getFullYear()}년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일 (${DAY_NAMES[selectedDate.getDay()]})${selectedTime ? ' ' + selectedTime : ''}`
+    ? `${selectedDate.getFullYear()}년 ${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일 (${DAY_NAMES[selectedDate.getDay()]})${selectedTime ? " " + selectedTime : ""}`
     : null;
 
   if (submitted) {
@@ -71,8 +119,12 @@ export default function ReservationFormSection() {
           <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="text-cyan-400" size={32} />
           </div>
-          <h2 className="text-2xl font-black text-white mb-3">예약이 완료되었습니다!</h2>
-          <p className="text-slate-400 text-sm mb-4">빠른 시간 내에 연락드리겠습니다.</p>
+          <h2 className="text-2xl font-black text-white mb-3">
+            예약이 완료되었습니다!
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">
+            빠른 시간 내에 연락드리겠습니다.
+          </p>
           {scheduleLabel && (
             <div className="px-4 py-3 bg-cyan-500/10 border border-cyan-500/20 rounded-xl text-sm text-cyan-300">
               {scheduleLabel}
@@ -90,15 +142,17 @@ export default function ReservationFormSection() {
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-48 bg-blue-700/6 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-2xl mx-auto">
-
         <div className="mb-10 flex flex-col items-center text-center">
           <span className="px-4 py-1.5 rounded-full border border-cyan-800/50 bg-cyan-900/20 text-cyan-400 text-xs font-semibold mb-5">
-            무료 상담 예약 &nbsp;·&nbsp; 24시간 내 연락 &nbsp;·&nbsp; 맞춤 견적 제공
+            무료 상담 예약 &nbsp;·&nbsp; 24시간 내 연락 &nbsp;·&nbsp; 맞춤 견적
+            제공
           </span>
           <h1 className="text-3xl sm:text-5xl font-black mb-4 text-white">
             {RESERVATION_PAGE.title}
           </h1>
-          <p className="text-slate-400 text-xs mb-3">{RESERVATION_PAGE.subtitle}</p>
+          <p className="text-slate-400 text-xs mb-3">
+            {RESERVATION_PAGE.subtitle}
+          </p>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-slate-300">
             <span className="flex items-center gap-1.5">
               <Zap size={14} className="text-yellow-400" />
@@ -116,7 +170,6 @@ export default function ReservationFormSection() {
         </div>
 
         <div className="space-y-5">
-
           {/* Step 1: 날짜 선택 */}
           <div className="bg-slate-900/70 backdrop-blur-sm border border-white/[0.07] rounded-2xl p-6">
             <div className="flex items-center gap-3 mb-6">
@@ -128,21 +181,35 @@ export default function ReservationFormSection() {
           </div>
 
           {/* Step 2: 시간 선택 */}
-          <div className={`bg-slate-900/70 backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 ${
-            selectedDate ? 'border-white/[0.07]' : 'border-white/[0.04] opacity-50'
-          }`}>
+          <div
+            className={`bg-slate-900/70 backdrop-blur-sm border rounded-2xl p-6 transition-all duration-300 ${
+              selectedDate
+                ? "border-white/[0.07]"
+                : "border-white/[0.04] opacity-50"
+            }`}
+          >
             <div className="flex items-center gap-3 mb-6">
               <StepBadge number="2" />
-              <Clock size={18} className={selectedDate ? 'text-cyan-400' : 'text-slate-600'} />
-              <h2 className={`text-base font-bold ${selectedDate ? 'text-white' : 'text-slate-600'}`}>
+              <Clock
+                size={18}
+                className={selectedDate ? "text-cyan-400" : "text-slate-600"}
+              />
+              <h2
+                className={`text-base font-bold ${selectedDate ? "text-white" : "text-slate-600"}`}
+              >
                 시간 선택
               </h2>
             </div>
 
             {!selectedDate ? (
               <div className="py-8 text-center">
-                <CalendarDays size={28} className="text-slate-700 mx-auto mb-3" />
-                <p className="text-sm text-slate-600">먼저 날짜를 선택해 주세요</p>
+                <CalendarDays
+                  size={28}
+                  className="text-slate-700 mx-auto mb-3"
+                />
+                <p className="text-sm text-slate-600">
+                  먼저 날짜를 선택해 주세요
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -153,8 +220,8 @@ export default function ReservationFormSection() {
                     onClick={() => setSelectedTime(time)}
                     className={`py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                       selectedTime === time
-                        ? 'bg-cyan-500/20 border border-cyan-500/60 text-cyan-300 shadow-sm shadow-cyan-500/20'
-                        : 'bg-slate-800/60 border border-white/[0.06] text-slate-300 hover:border-cyan-500/30 hover:text-cyan-300 hover:bg-cyan-500/5'
+                        ? "bg-cyan-500/20 border border-cyan-500/60 text-cyan-300 shadow-sm shadow-cyan-500/20"
+                        : "bg-slate-800/60 border border-white/[0.06] text-slate-300 hover:border-cyan-500/30 hover:text-cyan-300 hover:bg-cyan-500/5"
                     }`}
                   >
                     {time}
@@ -166,19 +233,30 @@ export default function ReservationFormSection() {
 
           {/* 선택된 일정 요약 */}
           {selectedDate && (
-            <div className={`flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all duration-300 ${
-              selectedTime
-                ? 'bg-cyan-500/10 border-cyan-500/30'
-                : 'bg-slate-900/50 border-white/[0.06]'
-            }`}>
-              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                selectedTime ? 'bg-cyan-400 animate-pulse' : 'bg-slate-600'
-              }`} />
+            <div
+              className={`flex items-center gap-4 px-5 py-4 rounded-2xl border transition-all duration-300 ${
+                selectedTime
+                  ? "bg-cyan-500/10 border-cyan-500/30"
+                  : "bg-slate-900/50 border-white/[0.06]"
+              }`}
+            >
+              <div
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                  selectedTime ? "bg-cyan-400 animate-pulse" : "bg-slate-600"
+                }`}
+              />
               <div>
                 <p className="text-xs text-slate-500 mb-0.5">선택된 일정</p>
-                <p className={`text-sm font-semibold ${selectedTime ? 'text-cyan-300' : 'text-slate-400'}`}>
+                <p
+                  className={`text-sm font-semibold ${selectedTime ? "text-cyan-300" : "text-slate-400"}`}
+                >
                   {scheduleLabel}
-                  {!selectedTime && <span className="text-slate-600"> — 시간을 선택해 주세요</span>}
+                  {!selectedTime && (
+                    <span className="text-slate-600">
+                      {" "}
+                      — 시간을 선택해 주세요
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
@@ -193,7 +271,6 @@ export default function ReservationFormSection() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-
               <div>
                 <label className="flex items-center gap-1.5 text-xs text-slate-400 mb-1.5 font-medium">
                   <User size={12} className="text-cyan-500/70" />
@@ -240,7 +317,9 @@ export default function ReservationFormSection() {
                 >
                   <option value="">선택해주세요</option>
                   {form.type.options.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -297,10 +376,8 @@ export default function ReservationFormSection() {
               </button>
             </form>
           </div>
-
         </div>
       </div>
     </section>
   );
 }
-

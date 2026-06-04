@@ -1,12 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { STICKY_FORM } from '@/data/commonText';
+import { useState, useEffect } from "react";
+import { STICKY_FORM } from "@/data/commonText";
+import { supabase } from "@/lib/supabase";
 
 export default function FormModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [form, setForm] = useState({
-    name: '', phone: '', type: '', industry: '', request: '', agree: false,
+    name: "",
+    phone: "",
+    type: "",
+    industry: "",
+    request: "",
+    agree: false,
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -14,7 +20,7 @@ export default function FormModal() {
     const openModal = () => setIsOpen(true);
 
     // custom event (버튼 onClick에서 dispatch)
-    window.addEventListener('open-diagnosis-modal', openModal);
+    window.addEventListener("open-diagnosis-modal", openModal);
 
     // /#form 또는 #form 링크 클릭 전역 인터셉트
     const interceptFormLinks = (e) => {
@@ -24,22 +30,24 @@ export default function FormModal() {
         setIsOpen(true);
       }
     };
-    document.addEventListener('click', interceptFormLinks);
+    document.addEventListener("click", interceptFormLinks);
 
     return () => {
-      window.removeEventListener('open-diagnosis-modal', openModal);
-      document.removeEventListener('click', interceptFormLinks);
+      window.removeEventListener("open-diagnosis-modal", openModal);
+      document.removeEventListener("click", interceptFormLinks);
     };
   }, []);
 
   useEffect(() => {
     if (!isOpen) return;
-    const handleEsc = (e) => { if (e.key === 'Escape') close(); };
-    window.addEventListener('keydown', handleEsc);
-    document.body.style.overflow = 'hidden';
+    const handleEsc = (e) => {
+      if (e.key === "Escape") close();
+    };
+    window.addEventListener("keydown", handleEsc);
+    document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = '';
+      window.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -50,14 +58,47 @@ export default function FormModal() {
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   }
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.agree) return alert('개인정보 수집 및 상담 동의에 체크해 주세요.');
-    setSubmitted(true);
-  }
+
+    if (!form.agree) {
+      alert("개인정보 수집에 동의해주세요.");
+      return;
+    }
+
+    const { error } = await supabase.from("inquiries").insert([
+      {
+        name: form.name,
+        phone: form.phone,
+        production_type: form.type,
+        business_type: form.industry,
+        request_note: form.request,
+      },
+    ]);
+
+    if (error) {
+      console.error(error);
+      alert("문의 접수에 실패했습니다.");
+      return;
+    }
+
+    alert("문의가 접수되었습니다.");
+
+    setForm({
+      name: "",
+      phone: "",
+      type: "",
+      industry: "",
+      request: "",
+      agree: false,
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -88,8 +129,18 @@ export default function FormModal() {
           className="absolute top-2.5 right-2.5 z-20 text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors p-2.5 rounded-lg"
           aria-label="닫기"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
@@ -97,71 +148,112 @@ export default function FormModal() {
           <div className="text-center py-10">
             <div className="text-4xl mb-4">✅</div>
             <h3 className="text-lg font-bold text-white mb-2">접수 완료!</h3>
-            <p className="text-sm text-slate-400">빠른 시간 내에 연락드리겠습니다.</p>
+            <p className="text-sm text-slate-400">
+              빠른 시간 내에 연락드리겠습니다.
+            </p>
           </div>
         ) : (
           <>
             <div className="relative z-10 mb-5">
-              <p className="text-xs text-blue-400 font-semibold tracking-wider uppercase mb-1">{STICKY_FORM.title}</p>
-              <h3 className="text-lg font-bold text-white">{STICKY_FORM.subtitle}</h3>
+              <p className="text-xs text-blue-400 font-semibold tracking-wider uppercase mb-1">
+                {STICKY_FORM.title}
+              </p>
+              <h3 className="text-lg font-bold text-white">
+                {STICKY_FORM.subtitle}
+              </h3>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-3 relative z-10">
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{STICKY_FORM.fields.name.label}</label>
+                <label className="block text-xs text-slate-400 mb-1">
+                  {STICKY_FORM.fields.name.label}
+                </label>
                 <input
-                  type="text" name="name" value={form.name} onChange={handleChange}
-                  placeholder={STICKY_FORM.fields.name.placeholder} required
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder={STICKY_FORM.fields.name.placeholder}
+                  required
                   className="w-full bg-slate-800/60 border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{STICKY_FORM.fields.phone.label}</label>
+                <label className="block text-xs text-slate-400 mb-1">
+                  {STICKY_FORM.fields.phone.label}
+                </label>
                 <input
-                  type="tel" name="phone" value={form.phone} onChange={handleChange}
-                  placeholder={STICKY_FORM.fields.phone.placeholder} required
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder={STICKY_FORM.fields.phone.placeholder}
+                  required
                   className="w-full bg-slate-800/60 border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{STICKY_FORM.fields.type.label}</label>
+                <label className="block text-xs text-slate-400 mb-1">
+                  {STICKY_FORM.fields.type.label}
+                </label>
                 <select
-                  name="type" value={form.type} onChange={handleChange} required
+                  name="type"
+                  value={form.type}
+                  onChange={handleChange}
+                  required
                   className="w-full bg-slate-800/60 border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white"
                 >
                   <option value="">선택해주세요</option>
                   {STICKY_FORM.fields.type.options.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{STICKY_FORM.fields.industry.label}</label>
+                <label className="block text-xs text-slate-400 mb-1">
+                  {STICKY_FORM.fields.industry.label}
+                </label>
                 <input
-                  type="text" name="industry" value={form.industry} onChange={handleChange}
-                  placeholder={STICKY_FORM.fields.industry.placeholder} required
+                  type="text"
+                  name="industry"
+                  value={form.industry}
+                  onChange={handleChange}
+                  placeholder={STICKY_FORM.fields.industry.placeholder}
+                  required
                   className="w-full bg-slate-800/60 border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-slate-400 mb-1">{STICKY_FORM.fields.request.label}</label>
+                <label className="block text-xs text-slate-400 mb-1">
+                  {STICKY_FORM.fields.request.label}
+                </label>
                 <textarea
-                  name="request" value={form.request} onChange={handleChange}
-                  placeholder={STICKY_FORM.fields.request.placeholder} rows={3}
+                  name="request"
+                  value={form.request}
+                  onChange={handleChange}
+                  placeholder={STICKY_FORM.fields.request.placeholder}
+                  rows={3}
                   className="w-full bg-slate-800/60 border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 resize-none"
                 />
               </div>
 
               <label className="flex items-start gap-2 cursor-pointer">
                 <input
-                  type="checkbox" name="agree" checked={form.agree} onChange={handleChange}
+                  type="checkbox"
+                  name="agree"
+                  checked={form.agree}
+                  onChange={handleChange}
                   className="mt-0.5 accent-blue-500"
                 />
-                <span className="text-xs text-slate-400">{STICKY_FORM.fields.agree}</span>
+                <span className="text-xs text-slate-400">
+                  {STICKY_FORM.fields.agree}
+                </span>
               </label>
 
               <button

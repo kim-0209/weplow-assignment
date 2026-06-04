@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Info } from 'lucide-react';
-import { CARE_PLANS, PRICING_NOTICE } from '@/data/pricingText';
+import Link from "next/link";
+import { Info } from "lucide-react";
+import { CARE_PLANS, PRICING_NOTICE } from "@/data/pricingText";
 
 export default function CarePlansSection() {
   return (
@@ -10,7 +10,9 @@ export default function CarePlansSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/8 to-transparent pointer-events-none" />
 
       <div className="relative text-center mb-12">
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">{CARE_PLANS.sectionTitle}</h2>
+        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
+          {CARE_PLANS.sectionTitle}
+        </h2>
         <p className="text-sm text-slate-400">{CARE_PLANS.sub}</p>
       </div>
 
@@ -20,10 +22,10 @@ export default function CarePlansSection() {
             key={plan.name}
             className={`relative flex flex-col rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               plan.isTop
-                ? 'bg-gradient-to-b from-amber-950/40 to-slate-900/60 backdrop-blur-sm border border-amber-500/40 shadow-xl shadow-amber-500/10 hover:shadow-amber-500/20'
+                ? "bg-gradient-to-b from-amber-950/40 to-slate-900/60 backdrop-blur-sm border border-amber-500/40 shadow-xl shadow-amber-500/10 hover:shadow-amber-500/20"
                 : plan.popular
-                ? 'bg-blue-950/40 backdrop-blur-sm border border-blue-500/50 shadow-xl shadow-blue-500/15 hover:shadow-blue-500/25'
-                : 'bg-slate-900/50 backdrop-blur-sm border border-white/[0.07] hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10'
+                  ? "bg-blue-950/40 backdrop-blur-sm border border-blue-500/50 shadow-xl shadow-blue-500/15 hover:shadow-blue-500/25"
+                  : "bg-slate-900/50 backdrop-blur-sm border border-white/[0.07] hover:border-blue-500/30 hover:shadow-lg hover:shadow-blue-500/10"
             }`}
           >
             {plan.isTop && (
@@ -38,23 +40,35 @@ export default function CarePlansSection() {
             )}
 
             {/* Tier badge */}
-            <span className={`inline-block self-start mb-3 px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider border ${
-              plan.isTop
-                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                : 'bg-blue-900/40 border-blue-800/50 text-blue-400'
-            }`}>
+            <span
+              className={`inline-block self-start mb-3 px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider border ${
+                plan.isTop
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                  : "bg-blue-900/40 border-blue-800/50 text-blue-400"
+              }`}
+            >
               {plan.tier}
             </span>
 
-            <h3 className={`text-lg font-black mb-0.5 ${plan.isTop ? 'text-amber-400' : 'text-white'}`}>
+            <h3
+              className={`text-lg font-black mb-0.5 ${plan.isTop ? "text-amber-400" : "text-white"}`}
+            >
               {plan.name}
             </h3>
-            <p className={`text-xs mb-3 ${plan.isTop ? 'text-amber-300/70' : 'text-slate-400'}`}>{plan.subtitle}</p>
+            <p
+              className={`text-xs mb-3 ${plan.isTop ? "text-amber-300/70" : "text-slate-400"}`}
+            >
+              {plan.subtitle}
+            </p>
 
             {/* Price */}
             <div className="mb-5">
-              <p className="text-xs text-slate-500 line-through decoration-red-400 mb-0.5">{plan.originalPrice}</p>
-              <span className={`text-2xl font-black ${plan.isTop ? 'text-amber-400' : 'text-blue-400'}`}>
+              <p className="text-xs text-slate-500 line-through decoration-red-400 mb-0.5">
+                {plan.originalPrice}
+              </p>
+              <span
+                className={`text-2xl font-black ${plan.isTop ? "text-amber-400" : "text-blue-400"}`}
+              >
                 {plan.price}
               </span>
               <p className="text-[10px] text-slate-500 mt-0.5">VAT 포함</p>
@@ -63,8 +77,14 @@ export default function CarePlansSection() {
             <ul className="space-y-2.5 flex-1 mb-6">
               {plan.checklist.map((item) => (
                 <li key={item.item} className="flex items-start gap-2.5">
-                  <span className={`flex-shrink-0 w-1.5 h-1.5 rounded-full mt-1.5 ${item.ok ? (plan.isTop ? 'bg-amber-400' : 'bg-blue-400') : 'bg-slate-600'}`} />
-                  <span className={`text-sm ${item.ok ? 'text-slate-300' : 'text-slate-600'}`}>{item.item}</span>
+                  <span
+                    className={`flex-shrink-0 w-1.5 h-1.5 rounded-full mt-1.5 ${item.ok ? (plan.isTop ? "bg-amber-400" : "bg-blue-400") : "bg-slate-600"}`}
+                  />
+                  <span
+                    className={`text-sm ${item.ok ? "text-slate-300" : "text-slate-600"}`}
+                  >
+                    {item.item}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -73,10 +93,10 @@ export default function CarePlansSection() {
               href="/reservation"
               className={`block text-center py-3 rounded-xl font-bold text-sm transition-all ${
                 plan.isTop
-                  ? 'crown-gradient text-amber-900 font-black'
+                  ? "crown-gradient text-amber-900 font-black"
                   : plan.popular
-                  ? 'gradient-blue text-white'
-                  : 'bg-slate-800/60 border border-white/[0.08] text-white hover:border-blue-500/40 transition-colors'
+                    ? "gradient-blue text-white"
+                    : "bg-slate-800/60 border border-white/[0.08] text-white hover:border-blue-500/40 transition-colors"
               }`}
             >
               신청하기
@@ -91,7 +111,9 @@ export default function CarePlansSection() {
           {PRICING_NOTICE}
         </div>
         <p className="text-[11px] text-slate-600 text-center leading-relaxed">
-          ※ 유지보수는 텍스트, 이미지, 링크 등 경미한 수정 기준입니다.&nbsp;&nbsp;페이지 추가 및 기능 개발은 별도 비용이 발생할 수 있습니다.
+          ※ 유지보수는 텍스트, 이미지, 링크 등 경미한 수정
+          기준입니다.&nbsp;&nbsp;페이지 추가 및 기능 개발은 별도 비용이 발생할
+          수 있습니다.
         </p>
       </div>
     </section>

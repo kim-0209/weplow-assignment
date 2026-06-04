@@ -1,24 +1,24 @@
-import { Search, MapPin, Info } from 'lucide-react';
-import { AD_PLANS, PRICING_NOTICE } from '@/data/pricingText';
+import { Search, MapPin, Info } from "lucide-react";
+import { AD_PLANS, PRICING_NOTICE } from "@/data/pricingText";
 
 const THEME = {
   green: {
-    border: 'border-l-4 border-l-green-500',
-    iconBg: 'bg-green-500/10 border-green-500/20',
+    border: "border-l-4 border-l-green-500",
+    iconBg: "bg-green-500/10 border-green-500/20",
     icon: Search,
-    iconColor: 'text-green-400',
-    price: 'text-green-400',
-    tag: 'border-green-500/30 text-green-400 bg-green-500/5',
-    btn: 'bg-green-600 hover:bg-green-500 text-white',
+    iconColor: "text-green-400",
+    price: "text-green-400",
+    tag: "border-green-500/30 text-green-400 bg-green-500/5",
+    btn: "bg-green-600 hover:bg-green-500 text-white",
   },
   orange: {
-    border: 'border-l-4 border-l-orange-500',
-    iconBg: 'bg-orange-500/10 border-orange-500/20',
+    border: "border-l-4 border-l-orange-500",
+    iconBg: "bg-orange-500/10 border-orange-500/20",
     icon: MapPin,
-    iconColor: 'text-orange-400',
-    price: 'text-orange-400',
-    tag: 'border-orange-500/30 text-orange-400 bg-orange-500/5',
-    btn: 'bg-orange-600 hover:bg-orange-500 text-white',
+    iconColor: "text-orange-400",
+    price: "text-orange-400",
+    tag: "border-orange-500/30 text-orange-400 bg-orange-500/5",
+    btn: "bg-orange-600 hover:bg-orange-500 text-white",
   },
 };
 
@@ -28,7 +28,9 @@ export default function AdPlansSection() {
       <div className="absolute top-0 right-1/3 w-80 h-80 bg-cyan-400/6 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-blue-600/8 rounded-full blur-3xl pointer-events-none" />
       <div className="text-center mb-12">
-        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">{AD_PLANS.sectionTitle}</h2>
+        <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
+          {AD_PLANS.sectionTitle}
+        </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -42,17 +44,30 @@ export default function AdPlansSection() {
             >
               {/* Icon + name */}
               <div className="flex items-center gap-3 mb-5">
-                <div className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 ${t.iconBg}`}>
+                <div
+                  className={`w-10 h-10 rounded-xl border flex items-center justify-center flex-shrink-0 ${t.iconBg}`}
+                >
                   <Icon size={18} className={t.iconColor} />
                 </div>
                 <h3 className="text-lg font-black text-white">{plan.name}</h3>
               </div>
 
-              {/* Price */}
-              <p className={`text-2xl font-black mb-3 ${t.price}`}>{plan.price}</p>
+              <div className="mb-5">
+                <p className="text-xs text-slate-500 line-through decoration-red-400 mb-0.5">
+                  {plan.originalPrice}
+                </p>
+
+                {/* Price */}
+                <span className={`text-2xl font-black ${t.price}`}>
+                  {plan.price}
+                </span>
+                <p className="text-[10px] text-slate-500 mt-0.5">VAT 포함</p>
+              </div>
 
               {/* Description */}
-              <p className="text-sm text-slate-400 leading-relaxed mb-6 whitespace-pre-line">{plan.desc}</p>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6 whitespace-pre-line">
+                {plan.desc}
+              </p>
 
               {/* Tags */}
               <div className="flex flex-wrap gap-1.5 mt-auto">
@@ -79,11 +94,25 @@ export default function AdPlansSection() {
 
       {/* 도메인 안내 */}
       <div className="text-center mt-6 space-y-1">
-        <p className="text-xs text-slate-500">도메인은 고객님 명의로 등록되며 비용은 별도입니다.</p>
-        <p className="text-xs text-slate-500">위플로우에서 등록 및 연결 세팅은 무료 지원해드립니다.</p>
-        <p className="text-xs text-slate-500">✓ 도메인 연결 지원 &nbsp;&nbsp; ✓ 도메인 등록 대행 가능</p>
-        <p className="text-xs text-slate-500">※ 도메인 비용 별도</p>
-        <p className="text-xs text-slate-500">※ 광고비는 고객 계정에서 고객 결제수단으로 직접 결제되며, 위플로우는 운영 및 세팅만 진행합니다.</p>
+        <p className="text-xs text-slate-500">
+          도메인은 고객님 명의로 등록되며 비용은 별도입니다.
+        </p>
+        <p className="text-xs text-slate-500">
+          위플로우에서 등록 및 연결 세팅은 무료 지원해드립니다.
+        </p>
+        <p className="text-xs text-slate-500">
+          ✓ 도메인 연결 지원 &nbsp;&nbsp; ✓ 도메인 등록 대행 가능
+        </p>
+        <p className="text-xs text-slate-500">✓ 도메인 비용 별도</p>
+        <p className="text-xs text-slate-500">
+          ✓ 광고비는 고객 계정에서 고객 결제수단으로 직접 결제되며, 위플로우는
+          운영 및 세팅만 진행합니다.
+        </p>
+        <p className="text-xs text-slate-500">
+          위플로우는 운영 및 세팅만 합니다. <br />
+          유지보수는 텍스트, 이미지, 링크 등 경미한 수정 기준 입니다.
+          <br /> 페이지 추가 및 기능 개발은 별도 비용이 발생할 수 있습니다.
+        </p>
       </div>
     </section>
   );

@@ -1,7 +1,23 @@
-import { MessageSquare, LayoutTemplate, Palette, Code2, Rocket, TrendingUp, ChevronRight, ChevronDown } from 'lucide-react';
-import { SERVICE_PROCESS } from '@/data/servicesText';
+import {
+  MessageSquare,
+  LayoutTemplate,
+  Palette,
+  Code2,
+  Rocket,
+  TrendingUp,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
+import { SERVICE_PROCESS } from "@/data/servicesText";
 
-const ICONS = [MessageSquare, LayoutTemplate, Palette, Code2, Rocket, TrendingUp];
+const ICONS = [
+  MessageSquare,
+  LayoutTemplate,
+  Palette,
+  Code2,
+  Rocket,
+  TrendingUp,
+];
 
 function StepCard({ step, icon: Icon }) {
   return (
@@ -31,7 +47,9 @@ function Arrow() {
 function buildRow(steps, iconOffset) {
   const items = [];
   steps.forEach((step, idx) => {
-    items.push(<StepCard key={step.number} step={step} icon={ICONS[iconOffset + idx]} />);
+    items.push(
+      <StepCard key={step.number} step={step} icon={ICONS[iconOffset + idx]} />,
+    );
     if (idx < 2) items.push(<Arrow key={`arrow-${iconOffset}-${idx}`} />);
   });
   return items;
@@ -52,11 +70,11 @@ export default function ServiceProcessSection() {
         </div>
 
         <h2 className="text-3xl sm:text-4xl font-black text-white text-center mb-3">
-          6단계 제작 프로세스
+          제작진행과정
         </h2>
-        <p className="text-center text-slate-400 text-sm mb-12">
+        {/* <p className="text-center text-slate-400 text-sm mb-12">
           체계적인 프로세스로 완성도 높은 결과를 만들어 드립니다
-        </p>
+        </p> */}
 
         {/* Row 1 */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch">
