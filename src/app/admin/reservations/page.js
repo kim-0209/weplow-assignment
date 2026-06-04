@@ -43,6 +43,7 @@ export default function ReservationsPage() {
     if (!confirm("정말 삭제하시겠습니까?")) {
       return;
     }
+    //
 
     const { error } = await supabase.from("reservations").delete().eq("id", id);
 
