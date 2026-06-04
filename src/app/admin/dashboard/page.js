@@ -57,7 +57,7 @@ export default function DashboardPage() {
         <div className="mt-5 flex justify-end">
           <button
             onClick={handleLogout}
-            className="px-5 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+            className="px-5 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors cursor-pointer"
           >
             로그아웃
           </button>
